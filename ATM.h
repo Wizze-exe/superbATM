@@ -9,19 +9,18 @@ const string centerUnit(45, ' ');
 COORD coord = { 0 , 0 };
 fstream userInfo;
 
-void upperFrame();						//пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-void downFrame();						//пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-void moveConsoleCursor(int x, int y);	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-void eraseLine();						//пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+void frame();							//Чертит границы в консоли
+void moveConsoleCursor(int x, int y);				//Двигает курсор консоли
+void eraseLine();						//Стирает линию в консоли
 
 class ATM
 {
 private:
-	int balance;			//пїЅпїЅпїЅпїЅпїЅпїЅ
-	string bankAccount;		//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
-	string fullName;		//пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-	string passport;		//пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
-	string pin;				//пїЅпїЅпїЅпїЅпїЅпїЅ
+	int balance;			//Баланс
+	string bankAccount;		//Банковский счёт
+	string fullName;		//Имя человечка
+	string passport;		//Серия и номер паспорта
+	string pin;			//пинкод
 
 public:
 	void createAccount();
@@ -36,19 +35,22 @@ public:
 	ATM loginCheck();
 };
 
-void upperFrame() {
-	cout << "\n" << centerUnit + "Sberbank" + centerUnit << endl;
-	for (int i = 0; i < 100; i++) {
+void frame() {
+	moveConsoleCursor(50, 1);
+	cout << "Bank" << endl;
+	moveConsoleCursor(1, 2);
+	for (size_t i = 0; i < 100; i++)
+	{
 		cout << "_";
 	}
-}
-
-void downFrame() {
-	cout << endl << endl;
-	for (int i = 0; i < 100; i++) {
+	
+	moveConsoleCursor(1, 24);
+	for (size_t i = 0; i < 100; i++)
+	{
 		cout << "_";
 	}
-	cout << "\n" + centerUnit + "Sberbank" + centerUnit;
+	moveConsoleCursor(50, 26);
+	cout << "Bank" << endl;
 }
 
 void eraseLine() {
@@ -67,11 +69,12 @@ void ATM::mainMenu() {
 	system("cls");
 	system("COLOR 2F");
 
-	upperFrame();
-	cout << "\n" + centerUnit + "Main menu" + "\n\n";
-	cout << "1 : Create account\t2 : Login to account\t3 : Exit";
-	cout << "\n\n" << endl;
-	downFrame();
+
+	frame();
+	moveConsoleCursor(48, 4);
+	cout << "Main menu";
+	moveConsoleCursor(3, 12);
+	cout << "1 : Create account\t2: Login to account\t3 : Exit";
 
 	option = _getch();
 	switch (option) {
@@ -89,14 +92,65 @@ void ATM::mainMenu() {
 void ATM::transactionMenu() {
 	ATM atm;
 	atm = loginCheck();
+	char option;
 	system("cls");
 	system("COLOR 3F");
 
+	frame();
+	moveConsoleCursor(44, 4);
+	cout << "Transaction menu";
+	moveConsoleCursor(29, 12);
+	cout << "1 : Deposit cash\t\t2 : Show balance";
+	moveConsoleCursor(29, 15);
+	cout << "3 : Withdraw cash\t\t4 : Exit";
 
-	upperFrame();
-	cout << "\n\n\n\n\n\n\n\n\n\n\n" << endl;
-	downFrame();
-	getchar();
+	option = _getch();
+	switch (option)
+	{
+	case '1':
+		cashDeposit(atm);
+	case '2':
+		showBalance(atm);
+	case '3':
+		cashWithdraw(atm);
+	case '4':
+		exit(1);
+	default:
+		mainMenu();
+	}
+}
+
+void ATM::cashDeposit(ATM atm) {
+	int cash;
+	system("cls");
+	system("COLOR 3F");
+
+	frame();
+	while (true) {
+		moveConsoleCursor(29, 13);
+		cout << "Enter the amount of deposit: ";
+		cin >> cash;
+		if (cash % 50 != 0) {
+			moveConsoleCursor(29, 15);
+			cout << "Entered incorrect amount. Must be a multiple of 50.";
+		}
+		else {
+			atm.balance += cash;
+			break;
+		}
+	}
+	
+
+}
+
+void ATM::cashWithdraw(ATM atm) {
+	system("cls");
+	system("COLOR 3F");
+}
+
+void ATM::showBalance(ATM atm) {
+	system("cls");
+	system("COLOR 3F");
 }
 
 void ATM::createAccount() {
@@ -104,32 +158,30 @@ void ATM::createAccount() {
 	system("cls");
 	system("COLOR 3F");
 
-	upperFrame();
-	cout << "\n\n\n\n\n\n\n\n\n\n\n" << endl;
-	downFrame();
+	frame();
 
-	moveConsoleCursor(10, 15);
+	moveConsoleCursor(10, 23);
 	cout << "Errors: " << endl;
 
 	atm.balance = 0;
 
-	while (true) {						//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ(пїЅпїЅпїЅ + пїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
+	while (true) {						//Ввод полного имени(имя + фамилия)
 		moveConsoleCursor(10, 5);
 		cout << "Enter your full name: ";
 		getline(cin, atm.fullName);
 		if (atm.fullName.find(" ") != string::npos) {
-			//пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+			//если в строке есть пробел, то выходим из цикла и идём дальше
 			break;
 		}
 		else {
-			//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+			//иначе стирает введённые данные и выводит ошибку
 			eraseLine();
-			moveConsoleCursor(18, 15);
+			moveConsoleCursor(18, 23);
 			cout << "fullName must be 2 words with space between it.";
 		}
 	}
 
-	while (true) {						//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	while (true) {						//Ввод номера и серии паспорта
 		moveConsoleCursor(10, 7);
 		cout << "Enter passport number: ";
 		getline(cin, atm.passport);
@@ -140,7 +192,7 @@ void ATM::createAccount() {
 			eraseLine();
 			moveConsoleCursor(11, 15);
 			eraseLine();
-			moveConsoleCursor(18, 15);
+			moveConsoleCursor(18, 23);
 			cout << "Passport must contain 10 digits.";
 		}
 	}
@@ -163,7 +215,7 @@ void ATM::createAccount() {
 		}
 	}
 
-	//пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, 16 пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	//Создаём банковский счёт, 16 цифр случайным образом
 	srand(time(0));
 	for (int i = 0; i < 16; i++) {
 		atm.bankAccount += to_string((rand() % 10));
@@ -186,50 +238,46 @@ ATM ATM::loginCheck() {
 	ATM atm;
 	string pinCheck;
 	int enteredPin = 0;
-	string userInfoValue;
+	char charDigit;
 
-	upperFrame();
-	cout << "\n\n" + centerUnit << "\b\bAUTHORIZATION" << endl;
-	cout << "\n\n\n\n\n\n\n\n\n\n";
-	downFrame();
+	frame();
+	moveConsoleCursor(46, 4);
+	cout << "Authorization" << endl;
 
-	//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+	//Ввод пинкода
 	while (true) {
-		moveConsoleCursor(35, 8);
+		pinCheck = "";
+		moveConsoleCursor(35, 12);
 		cout << "Enter pin: ";
 
 		int i = 0;
 		while (i != 6) {
-			char charDigit = _getch();
+			charDigit = _getch();
 			if (isdigit(charDigit)) {
 				pinCheck += charDigit;
 				i++;
 				cout << '*';
 			}
 			else {
-				moveConsoleCursor(35, 10);
+				moveConsoleCursor(35, 14);
 				cout << "ONLY DIGITS!";
-				moveConsoleCursor(46 + i, 8);
+				moveConsoleCursor(46 + i, 12);
 			}
 		}
 
-		//пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		//Ищем совпадение введённого пин кода в данных файлика
 		userInfo.open("info.txt", fstream::in);
-		while (userInfo >> atm.pin >> atm.balance >> atm.passport >> atm.bankAccount >> atm.fullName) {
-			if (atm.pin == pinCheck) {
-				return atm;
-			}
-			else {
-				if (enteredPin == 3) {
-					exit(1);
+		while (!userInfo.eof()) {
+			while (userInfo >> atm.pin >> atm.balance >> atm.passport >> atm.bankAccount >> atm.fullName) {
+				if (atm.pin == pinCheck) {
+					return atm;
 				}
-				//пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ:
 				else {
-					eraseLine();
-					moveConsoleCursor(35, 8);
-					cout << "Enter pin: ";
+					if (enteredPin == 3) {
+						exit(1);
+					}
+					break;
 				}
-				break;
 			}
 		}
 		enteredPin++;
